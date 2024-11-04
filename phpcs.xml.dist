@@ -4,7 +4,7 @@
          xsi:noNamespaceSchemaLocation="vendor/squizlabs/php_codesniffer/phpcs.xsd">
 	<description>chillerlan rules for phpcs</description>
 
-	<file>examples</file>
+	<!--<file>examples</file>-->
 	<file>src</file>
 	<file>tests</file>
 
