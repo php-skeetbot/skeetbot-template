@@ -1,46 +1,99 @@
-# chillerlan/php-library-template-nodocs
+# php-skeetbot/skeetbot-template
 
-A template/boilerplate for PHP libraries (similar to [chillerlan/php-library-template](https://github.com/chillerlan/php-library-template) but without phpdocs and readthedocs deployment).
+## getting started
 
-[![PHP Version Support][php-badge]][php]
-[![Packagist version][packagist-badge]][packagist]
-[![License][license-badge]][license]
-[![Continuous Integration][gh-action-badge]][gh-action]
-[![CodeCov][coverage-badge]][coverage]
-[![Packagist downloads][downloads-badge]][downloads]
+### first things first
+- clone this repository
+- create a Bluesky account for your bot, e.g under https://bsky.app/settings -> add account
+- switch to the bot account and create a new app password https://bsky.app/settings/app-passwords
+- copy [`/.config/.env_example`](./.config/.env_example) to `/.config/.env` (for local test, **do not upload the .env to GitHub!**)
+	- copy the app password and save it in the `.env` as `BLUESKY_APP_PW`, go to the repository settings on GitHub under `{repo_url}/settings/secrets/actions` and save it there too (not necessary if you plan to run the bot on your own webserver)
+    - copy the handle of your bot account (e.g. `mybot.bsky.social`) and save it as `BLUESKY_HANDLE`, save it as GitHub repository secret as well
+	- ~~save the Bluesky instance URL in the `.env` as `BLUESKY_INSTANCE`, save it as GitHub repository secret as well~~
+	- if you plan to use remote authentication with Bluesky, you will need to do the same for the client key, secret and callback-URL
+- fetch a fresh `cacert.pem` from https://curl.se/ca/cacert.pem and save it under `/.config`
 
-[php-badge]: https://img.shields.io/packagist/php-v/chillerlan/php-library-template-nodocs?logo=php&color=8892BF&logoColor=fff
-[php]: https://www.php.net/supported-versions.php
-[packagist-badge]: https://img.shields.io/packagist/v/chillerlan/php-library-template-nodocs.svg?logo=packagist&logoColor=fff
-[packagist]: https://packagist.org/packages/chillerlan/php-library-template-nodocs
-[license-badge]: https://img.shields.io/github/license/chillerlan/php-library-template-nodocs
-[license]: https://github.com/chillerlan/php-library-template-nodocs/blob/main/LICENSE
-[gh-action-badge]: https://img.shields.io/github/actions/workflow/status/chillerlan/php-library-template-nodocs/ci.yml?branch=main&logo=github&logoColor=fff
-[gh-action]: https://github.com/chillerlan/php-library-template-nodocs/actions/workflows/ci.yml?query=branch%3Amain
-[coverage-badge]: https://img.shields.io/codecov/c/github/chillerlan/php-library-template-nodocs.svg?logo=codecov&logoColor=fff
-[coverage]: https://codecov.io/github/chillerlan/php-library-template-nodocs
-[downloads-badge]: https://img.shields.io/packagist/dt/chillerlan/php-library-template-nodocs.svg?logo=packagist&logoColor=fff
-[downloads]: https://packagist.org/packages/chillerlan/php-library-template-nodocs/stats
+### next up: code
+- update the [`LICENSE`](./LICENSE)
+- change the example namespaces in [`composer.json`](./composer.json), add any libraries you need, add yourself as author
+	- commit the `composer.lock` after updating
+- change/replace the [`MySkeetBot`](./src/MySkeetBot.php) and [`MySkeetBotTest`](./tests/MySkeetBotTest.php) examples
+	- `MySkeetBot` needs to extend the abstract `SkeetBot` class
+- update the CLI runner [`run.php`](./cli/run.php) as necessary
 
-## Overview
+### finally: run
+- test locally: `php ./cli/run.php`
+- create a `run.yml` in [`/.github/workflows`](./.github/workflows) which enables a scheduled GitHub action (see below)
+- profit!
 
-### Features
+```yml
+# https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions
 
-- [GitHub Actions](https://github.com/chillerlan/php-library-template-nodocs/actions) runner
-- [Composer](https://getcomposer.org) dependency management
-- [PHPUnit](https://phpunit.de) unit tests
-- [PHPStan](https://github.com/phpstan/phpstan) static analysis
-- [PHPCS](https://github.com/PHPCSStandards/PHP_CodeSniffer) coding standard analyzer
-- [PHPMD](https://phpmd.org) mess detector
-- [Codecov](https://codecov.io) code coverage analysis
-- [phpDocumentor](https://www.phpdoc.org) auto generated API docs
+on:
+  schedule:
+    # POSIX cron syntax (every 12th hour), https://crontab.guru/#0_12_*_*_*
+    - cron: "0 12 * * *"
 
+name: "Run"
 
-### Requirements
+jobs:
 
-- PHP 8.1+
+  run-bot:
+    name: "Run the bot and post to Bluesky"
 
+    runs-on: ubuntu-latest
 
-## Disclaimer
+    # requiired for stefanzweifel/git-auto-commit-action
+    permissions:
+      contents: write
 
-Use at your own risk!
+    env:
+      BLUESKY_APP_PW: ${{ secrets.BLUESKY_APP_PW }}
+      BLUESKY_HANDLE: ${{ secrets.BLUESKY_HANDLE }}
+
+    steps:
+      - name: "Checkout sources"
+        uses: actions/checkout@v4
+
+      - name: "Install PHP"
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.2"
+          coverage: none
+          extensions: curl, fileinfo, intl, json, openssl, mbstring, simplexml, sodium, zlib
+
+      - name: "Install dependencies with composer"
+        uses: ramsey/composer-install@v3
+
+      - name: "Fetch cacert.pem from curl.haxx.se"
+        run: wget -O config/cacert.pem https://curl.se/ca/cacert.pem
+
+      - name: "Run bot"
+        run: php ./cli/run.php
+
+      # please note that this requires read/write permissions for the actions runner!
+      - name: "Commit log"
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: ":octocat: posted skeet"
+          file_pattern: "data/posted.json"
+          commit_user_name: "github-actions[bot]"
+          commit_user_email: "41898282+github-actions[bot]@users.noreply.github.com"
+          commit_author: "github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>"
+```
+
+## related projects
+- [php-skeetbot/php-skeetbot](https://github.com/php-skeetbot/php-skeetbot)
+	- [php-skeetbot/skeetbot-template](https://github.com/php-skeetbot/skeetbot-template)
+- [chillerlan/php-httpinterface](https://github.com/chillerlan/php-httpinterface)
+	- [chillerlan/php-http-message-utils](https://github.com/chillerlan/php-http-message-utils)
+	- [chillerlan/php-oauth-core](https://github.com/chillerlan/php-oauth-core)
+		- [chillerlan/php-oauth-providers](https://github.com/chillerlan/php-oauth-providers)
+- [chillerlan/php-settings-container](https://github.com/chillerlan/php-settings-container)
+- [chillerlan/php-dotenv](https://github.com/chillerlan/php-dotenv)
+
+## disclaimer
+
+WE'RE TOTALLY NOT RUNNING A PRODUCTION-LIKE ENVIRONMENT ON GITHUB.<br>
+WE'RE RUNNING A TEST AND POST THE RESULT TO AN EXTERNAL WEBSITE.<br>
+WE'RE JUST LOOKING IF THE SCRIPT STILL WORKS ON A SCHEDULE N TIMES A DAY.

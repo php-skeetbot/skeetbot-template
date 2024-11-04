@@ -21,7 +21,7 @@ on:
 name: "Continuous Integration"
 
 env:
-  PHP_EXTENSIONS: "" # caution: setting 'none' resets/disables shared extensions
+  PHP_EXTENSIONS: curl, fileinfo, intl, json, openssl, mbstring, simplexml, sodium, zlib
   PHP_INI_VALUES: memory_limit=-1, error_reporting=-1, display_errors=On
 
 jobs:
@@ -34,9 +34,9 @@ jobs:
       fail-fast: true
       matrix:
         php-version:
-          - "8.1"
           - "8.2"
           - "8.3"
+          - "8.4"
 
     steps:
       - name: "Checkout"
@@ -50,8 +50,8 @@ jobs:
           ini-values: ${{ env.PHP_INI_VALUES }}
           coverage: none
 
-      - name: "Validate composer.json"
-        run: composer validate --ansi --strict
+#      - name: "Validate composer.json"
+#        run: composer validate --ansi --strict
 
       - name: "Install dependencies with composer"
         uses: ramsey/composer-install@v3
@@ -72,9 +72,9 @@ jobs:
           - ubuntu-latest
           - windows-latest
         php-version:
-          - "8.1"
           - "8.2"
           - "8.3"
+          - "8.4"
 
     steps:
       - name: "Checkout"

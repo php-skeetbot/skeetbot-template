@@ -19,3 +19,6 @@ phpdoc.xml
 phpmd.xml
 phpunit.xml
 phpstan.neon
+
+.config/*
+!.config/.env_example
