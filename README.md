@@ -3,7 +3,7 @@
 ## getting started
 
 ### first things first
-- clone this repository
+- ~~clone this repository~~ [*use this template*](https://github.com/new?template_name=skeetbot-template&template_owner=php-skeetbot)
 - create a Bluesky account for your bot, e.g under https://bsky.app/settings -> add account
 - switch to the bot account and create a new app password https://bsky.app/settings/app-passwords
 - copy [`/.config/.env_example`](./.config/.env_example) to `/.config/.env` (for local test, **do not upload the .env to GitHub!**)
