@@ -87,8 +87,7 @@ jobs:
 	- [php-skeetbot/skeetbot-template](https://github.com/php-skeetbot/skeetbot-template)
 - [chillerlan/php-httpinterface](https://github.com/chillerlan/php-httpinterface)
 	- [chillerlan/php-http-message-utils](https://github.com/chillerlan/php-http-message-utils)
-	- [chillerlan/php-oauth-core](https://github.com/chillerlan/php-oauth-core)
-		- [chillerlan/php-oauth-providers](https://github.com/chillerlan/php-oauth-providers)
+	- [chillerlan/php-oauth](https://github.com/chillerlan/php-oauth)
 - [chillerlan/php-settings-container](https://github.com/chillerlan/php-settings-container)
 - [chillerlan/php-dotenv](https://github.com/chillerlan/php-dotenv)
 

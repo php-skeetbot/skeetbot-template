@@ -33,7 +33,7 @@
 		"php": "^8.2",
 		"chillerlan/php-dotenv": "^3.0",
 		"chillerlan/php-settings-container": "^3.2",
-		"php-skeetbot/php-skeetbot": "dev-main#ede7690fbb2f00e9f091d18db19a302eac2a2715"
+		"php-skeetbot/php-skeetbot": "^1.0"
 	},
 	"require-dev": {
 		"phpmd/phpmd": "^2.15",
