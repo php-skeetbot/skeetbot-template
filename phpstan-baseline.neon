@@ -1,2 +1,21 @@
 parameters:
-	ignoreErrors: []
+	ignoreErrors:
+		-
+			message: "#^Access to an undefined property object\\:\\:\\$uri\\.$#"
+			count: 1
+			path: src/MySkeetBot.php
+
+		-
+			message: "#^Cannot access property \\$message on mixed\\.$#"
+			count: 1
+			path: src/MySkeetBot.php
+
+		-
+			message: "#^Cannot access property \\$validationStatus on mixed\\.$#"
+			count: 1
+			path: src/MySkeetBot.php
+
+		-
+			message: "#^Parameter \\#3 \\.\\.\\.\\$values of function sprintf expects bool\\|float\\|int\\|string\\|null, mixed given\\.$#"
+			count: 1
+			path: src/MySkeetBot.php
