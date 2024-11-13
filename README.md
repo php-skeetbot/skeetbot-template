@@ -65,8 +65,9 @@ jobs:
       - name: "Install dependencies with composer"
         uses: ramsey/composer-install@v3
 
+      # it's probably a good idea to just commit a cacert and update it every now and then
       - name: "Fetch cacert.pem from curl.haxx.se"
-        run: wget -O config/cacert.pem https://curl.se/ca/cacert.pem
+        run: wget -O ./.config/cacert.pem https://curl.se/ca/cacert.pem
 
       - name: "Run bot"
         run: php ./cli/run.php
