@@ -9,8 +9,6 @@
 - copy [`/.config/.env_example`](./.config/.env_example) to `/.config/.env` (for local test, **do not upload the .env to GitHub!**)
 	- copy the app password and save it in the `.env` as `BLUESKY_APP_PW`, go to the repository settings on GitHub under `{repo_url}/settings/secrets/actions` and save it there too (not necessary if you plan to run the bot on your own webserver)
     - copy the handle of your bot account (e.g. `mybot.bsky.social`) and save it as `BLUESKY_HANDLE`, save it as GitHub repository secret as well
-	- ~~save the Bluesky instance URL in the `.env` as `BLUESKY_INSTANCE`, save it as GitHub repository secret as well~~
-	- if you plan to use remote authentication with Bluesky, you will need to do the same for the client key, secret and callback-URL
 - fetch a fresh `cacert.pem` from https://curl.se/ca/cacert.pem and save it under `/.config`
 
 ### next up: code
